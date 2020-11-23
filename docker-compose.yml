@@ -1,14 +1,14 @@
 version: "3"
 
 services:
-  dga-nginx:
-    image: paiboon15721/dga-nginx
+  nginx-dga:
+    image: paiboon15721/nginx-dga
     restart: unless-stopped
     ports:
       - "80:80"
 
-  dga-nodejs:
-    image: paiboon15721/dga-nodejs
+  nodejs-dga:
+    image: paiboon15721/nodejs-dga
     restart: unless-stopped
     env_file:
       - ./nodejs/.env
