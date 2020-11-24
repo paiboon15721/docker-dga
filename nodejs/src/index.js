@@ -2,7 +2,7 @@ require('dotenv').config()
 const Koa = require('koa')
 const Router = require('@koa/router')
 const { redisGet, redisSet } = require('./connections/redis')
-const pg = require('./connections/postgres')
+const pgClient = require('./connections/postgres')
 
 const app = new Koa()
 const r = new Router()
@@ -25,10 +25,13 @@ r.get('/redis/get/:key', async ctx => {
 
 r.get('/pg/:table', async ctx => {
   const { table } = ctx.params
-  const { rows } = await pg.query('SELECT * FROM $1', [table])
+  const { rows } = await pgClient.query(`SELECT * FROM ${table}`)
   ctx.body = rows
 })
 
 app.use(r.routes())
 
-app.listen(3000, () => console.log('App listening on port 3000'))
+pgClient.connect().then(() => {
+  console.log('Connect to postgres success')
+  app.listen(3000, () => console.log('App listening on port 3000'))
+})
